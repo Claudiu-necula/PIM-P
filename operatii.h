@@ -1,5 +1,28 @@
 #pragma once
+
+#include <opencv2/core.hpp>
+#include<opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
+
 using namespace std;
+using namespace cv;
+
+Mat src, src_gray;
+Mat dst, detected_edges;
+int lowThreshold = 100;
+const int max_lowThreshold = 100;
+const int ratio = 3;
+const int kernel_size = 3;
+const char* window_name = "Edge Map";
+static void CannyThreshold(int, void*)
+{
+	blur(src_gray, detected_edges, Size(3, 3));
+	Canny(detected_edges, detected_edges, lowThreshold, lowThreshold * ratio, kernel_size);
+	imshow(window_name, detected_edges);
+}
+
+
+
 
 QImage makeGreyScale(QImage img) {
 	int width = img.width();
@@ -10,7 +33,7 @@ QImage makeGreyScale(QImage img) {
 			int gray = qGray(img.pixel(i, j));
 			greyScaleImage.setPixel(i, j, qRgb(gray, gray, gray));
 
-			//Varianta asta scoate imagine in nuante de albastru
+			//Varianta asta scoate imaginea in nuante de albastru
 			//greyScaleImage.setPixel(i, j, qGray(img.pixel(i, j)));
 		}
 	}
