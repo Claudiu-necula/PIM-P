@@ -3,26 +3,34 @@
 #include <opencv2/core.hpp>
 #include<opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
+#include<opencv2/opencv.hpp>
 
 using namespace std;
 using namespace cv;
 
 Mat src, src_gray;
 Mat dst, detected_edges;
-int lowThreshold = 100;
-const int max_lowThreshold = 100;
-const int ratio = 3;
+int lowThreshold = 130;
+const int max_lowThreshold = 130;
+const int ration = 3;
 const int kernel_size = 3;
-const char* window_name = "Edge Map";
-static void CannyThreshold(int, void*)
-{
-	blur(src_gray, detected_edges, Size(3, 3));
-	Canny(detected_edges, detected_edges, lowThreshold, lowThreshold * ratio, kernel_size);
-	imshow(window_name, detected_edges);
+
+Mat makeGreyscale(Mat img) {
+	Mat result;
+	cvtColor(img, result, COLOR_BGR2GRAY);
+	return result;
 }
 
-
-
+static Mat CannyThreshold(int, void*, Mat src)
+{
+	Mat edges;
+	Mat greyscale = makeGreyscale(src);
+	
+	blur(greyscale, edges, Size(3, 3));
+	Canny(edges, edges, lowThreshold, lowThreshold * ration, kernel_size);
+	//imshow("Edge Map", edges);
+	return edges;
+}
 
 QImage makeGreyScale(QImage img) {
 	int width = img.width();
